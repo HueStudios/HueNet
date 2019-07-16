@@ -1,10 +1,7 @@
 relay_func = function(update_parts, firmware_version)
 
   --Library imports
-  local computer  = require "computer"
-  local component = require "component"
-  local modem     = component.modem
-  local args      = {...}
+  local modem = component.proxy(component.list("modem")())
 
   --Random string generation
   local random_dictionary = "ABCDEF1234567890"
@@ -12,7 +9,7 @@ relay_func = function(update_parts, firmware_version)
     local result = ""
     for i=1,string_length,1 do
       random_id = math.random(1, #dictionary)
-      result = result .. dictionary[random_id]
+      result = result .. string.sub(dictionary, random_id, random_id)
     end
     return result
   end
@@ -120,6 +117,7 @@ relay_func = function(update_parts, firmware_version)
             if path_parts[#path_parts] ~= k then
               modem.send(k, port, "broadcast_message", origin, nil, data)
             end
+          end
         end
       end
       if port == 4200 then
