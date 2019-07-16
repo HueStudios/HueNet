@@ -44,4 +44,4 @@ for i, v in ipairs(update_parts) do
 end
 
 updateFunction = load(updateText)()
-updateFunction(updateText, firmware_version)
+updateFunction(update_parts, firmware_version)
