@@ -1,25 +1,27 @@
---Update package sent to the HueNet relays
---Copyright (C) 2019  HueStudios
+--[[
+Update package sent to the HueNet relays
+Copyright (C) 2019  HueStudios
 
---This program is free software: you can redistribute it and/or modify
---it under the terms of the GNU General Public License as published by
---the Free Software Foundation, either version 3 of the License, or
---(at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
---This program is distributed in the hope that it will be useful,
---but WITHOUT ANY WARRANTY; without even the implied warranty of
---MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
---GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
---You should have received a copy of the GNU General Public License
---along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+--]]
 
 relay_func = function(update_parts, firmware_version)
 
-  --Library imports
+  -- Library imports
   local modem = component.proxy(component.list("modem")())
 
-  --Random string generation
+  -- Random string generation
   local random_dictionary = "ABCDEF1234567890"
   local random_string = function(string_length, dictionary)
     local result = ""
@@ -31,7 +33,7 @@ relay_func = function(update_parts, firmware_version)
   end
 
   --Utils
-  local split_string = function (s, delimiter)
+  local split_string = function(s, delimiter)
     result = {};
     for match in (s..delimiter):gmatch("(.-)"..delimiter) do
         table.insert(result, match);
@@ -39,7 +41,7 @@ relay_func = function(update_parts, firmware_version)
     return result;
   end
 
-  --Relay initialization
+  -- Relay initialization
   local remote_relays  = {}
   local remote_clients = {}
   local relay_id       = random_string(5, random_dictionary)
@@ -47,31 +49,34 @@ relay_func = function(update_parts, firmware_version)
     modem.open(i)
   end
 
-  --Initialize modem
+  -- Initialize modem
   modem.open(4200)
-  modem.setStrength(400)
+  if modem.isWireless() then
+    modem.setStrength(400)
+  end
 
-  --Forward updates
+  -- Forward updates
   local updating = {}
 
-  --Obtain updates
+  -- Obtain updates
   local incoming_update_parts = {}
   local updater               = nil
 
   while true do
-    --Relay beacon
+    -- Relay beacon
     modem.broadcast(2040, nil, "relay_beacon")
 
-    --Obtain updates pre-message
+    -- Obtain updates pre-message
     if updater == nil then
       modem.broadcast(4200, firmware_version, "version")
     end
-    local signal, _, from, port, _, remote_firmware_version, command, origin, destination, data, path = computer.pullSignal(5)
+    local signal, _, from, port, _, remote_firmware_version,
+        command, origin, destination, data, path = computer.pullSignal(5)
 
-    --Signal filtering
+    -- Signal filtering
     if signal == "modem_message" then
 
-      --Network discovery
+      -- Network discovery
       if port == 2040 then
         if command == "relay_beacon" then
           relays[from] = true
@@ -84,27 +89,28 @@ relay_func = function(update_parts, firmware_version)
         end
       end
 
-      --Network transport
+      -- Network transport
       if port > 2040 and port <= 2045 then
 
-        --Message sending
+        -- Message sending
         if command == "send_message" then
 
-          --Prevent spoofing
+          -- Prevent spoofing
           if clients[from] and origin ~= from then
             origin = from
           end
 
-          --Send to destination
+          -- Send to destination
           if clients[destination] then
-            modem.send(destination, port, "send_message", origin, destination, data)
+            modem.send(destination, port, "send_message",
+                origin, destination, data)
           else
 
-            --Relay message
+            -- Relay message
             for k,v in pairs(relays) do
               path_parts = split_string(path, ",")
 
-              --Prevent message loops
+              -- Prevent message loops
               if path_parts[#path_parts] ~= k then
                 modem.send(k, port, "send_message", origin, destination, data)
               end
@@ -112,24 +118,24 @@ relay_func = function(update_parts, firmware_version)
           end
         end
 
-        --Message broadcasting
+        -- Message broadcasting
         if command == "broadcast_message" then
 
-          --Prevent spoofing
+          -- Prevent spoofing
           if clients[from] and origin ~= from then
             origin = from
           end
 
-          --Broadcast to clients
+          -- Broadcast to clients
           for k,v in pairs(clients) do
             modem.send(k, port, "broadcast_message", origin, nil, data)
           end
 
-          --Broadcast to relays
+          -- Broadcast to relays
           for k,v in pairs(relays) do
             path_parts = split_string(path, ",")
 
-            --Prevent message loops
+            -- Prevent message loops
             if path_parts[#path_parts] ~= k then
               modem.send(k, port, "broadcast_message", origin, nil, data)
             end
@@ -138,7 +144,7 @@ relay_func = function(update_parts, firmware_version)
       end
       if port == 4200 then
 
-        --Obtain updates post-message
+        -- Obtain updates post-message
         if updater == nil then
           if remote_firmware_version ~= nil then
             if remote_firmware_version > firmware_version then
@@ -157,8 +163,9 @@ relay_func = function(update_parts, firmware_version)
           end
         end
 
-        --Forward updates post-messages
-        if command == "update_me" and remote_firmware_version < firmware_version then
+        -- Forward updates post-messages
+        if command == "update_me" and
+            remote_firmware_version < firmware_version then
           updating[from] = 1
         end
         if command == "update_received" then
@@ -167,7 +174,7 @@ relay_func = function(update_parts, firmware_version)
       end
     end
 
-    --Forward updates to update clients
+    -- Forward updates to update clients
     for k, v in pairs(updating) do
       if v > #update_parts then
         updating[k] = 1
@@ -178,7 +185,7 @@ relay_func = function(update_parts, firmware_version)
     end
   end
 
-  --Compile and run received update
+  -- Compile and run received update
   local updateText = ""
   for i, v in ipairs(update_parts) do
     updateText = updateText .. v
