@@ -23,7 +23,9 @@ local modem = component.proxy(component.list("modem")())
 
 --Modem intialization
 modem.open(4200)
-modem.setStrength(400)
+if modem.isWireless() then
+  modem.setStrength(400)
+end
 
 --Update receive variables
 updater      = nil

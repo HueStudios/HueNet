@@ -49,7 +49,9 @@ relay_func = function(update_parts, firmware_version)
 
   --Initialize modem
   modem.open(4200)
-  modem.setStrength(400)
+  if modem.isWireless() then
+    modem.setStrength(400)
+  end
 
   --Forward updates
   local updating = {}

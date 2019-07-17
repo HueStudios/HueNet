@@ -23,7 +23,9 @@ local function beacon(force)
   end
   _0_()
   discovery_data.hello = "relay"
-  modem.setStrength(400)
+  if modem.isWireless() then
+    modem.setStrength(400)
+  end
   modem.broadcast(2042, serial.serialize(discovery_data))
   return term.write("B")
 end

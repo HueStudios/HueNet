@@ -21,7 +21,9 @@ local modem = component.modem
 
 --Initialize modem
 modem.open(4200)
-modem.setStrength(400)
+if modem.isWireless() then
+  modem.setStrength(400)
+end
 
 --Obtain console arguments
 args = {...}
