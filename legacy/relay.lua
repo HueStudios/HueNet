@@ -129,7 +129,8 @@ while true do
               local function _2_(...)
                 if (v.addr == data.to) then
                   if not (v.addr == from) then
-                    found_target = modem.send(v.addr, port, reserialized_message)
+                    found_target = modem.send(v.addr, port,
+                        reserialized_message)
                     return term.write("|")
                   end
                 end

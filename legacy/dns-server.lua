@@ -1,7 +1,8 @@
 local machonet = require("machonet")
 local serial = require("serialization")
 local registers = {}
-local charset = {"a", "b", "c", "d", "e", "f", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+local charset = {"a", "b", "c", "d", "e", "f",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
 local function generate_certificate()
   local result = ""
   for i = 1, 16 do

@@ -34,7 +34,8 @@ local function add_listener(port, addr, callback)
   modem.open(port)
   local id = (1 + #listeners)
   listener_count = (1 + listener_count)
-  local this_listener = {["listener-id"] = listener_count, addr = addr, callback = callback, port = port}
+  local this_listener = {["listener-id"] = listener_count,
+      addr = addr, callback = callback, port = port}
   listeners[id] = this_listener
   return listener_count
 end
@@ -82,7 +83,8 @@ local function send_to_addr(port, addr, message)
     return modem.send(current_relay.addr, port, serial.serialize(package))
   end
 end
-local function network_callback(nothing, receiver_addr, sender_addr, port, distance, message)
+local function network_callback(nothing,
+    receiver_addr, sender_addr, port, distance, message)
   local data = {}
   local function deserializeMessage()
     data = serial.unserialize(message)
@@ -94,7 +96,8 @@ local function network_callback(nothing, receiver_addr, sender_addr, port, dista
         if (data.from and data.msg) then
           for k, v in pairs(listeners) do
             local function _0_()
-              if (((v.addr == "*") or (v.addr == data.from)) and (v.port == port)) then
+              if (((v.addr == "*") or
+                  (v.addr == data.from)) and (v.port == port)) then
                 return pcall(v.callback, data.msg, port, data.from)
               end
             end
@@ -110,7 +113,8 @@ local function network_callback(nothing, receiver_addr, sender_addr, port, dista
         end
         _0_()
         if data.hello then
-          if ((data.hello == "relay") and (distance < current_relay.distance)) then
+          if ((data.hello == "relay") and
+              (distance < current_relay.distance)) then
             disconnect_from_relay(current_relay.addr)
             current_relay.assigned = true
             current_relay.addr = sender_addr
