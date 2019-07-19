@@ -73,6 +73,13 @@ relay_func = function(update_parts, firmware_version)
     local signal, _, from, port, _, remote_firmware_version,
         command, origin, destination, data, path = computer.pullSignal(5)
 
+    -- Path initialization
+    if path == nil then
+      path = relay_id
+    else
+      path = path .. "," .. relay_id
+    end
+
     -- Signal filtering
     if signal == "modem_message" then
 
