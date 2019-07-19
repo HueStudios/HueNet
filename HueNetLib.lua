@@ -84,22 +84,24 @@ end
 
 local drop_access_point_request = function()
   current_access_point = nil
+  access_point_distance = nil
   awaiting_relay_response = false
 end
-
-drop_request_id = nil
 
 local network_callback = function (_, local_address, sender_address, port,
     distance, _, command, origin, destination, data, path)
   if current_access_point == nil then
-    if command == "relay_beacon" and not awaiting_relay_response then
+    if command == "relay_beacon" and not awaiting_relay_response
+        and trying_to_connect then
       register_on_relay(sender_address)
       awaiting_relay_response = sender_address
       drop_request_id = event.timer(4, drop_access_point_request)
       return nil
     end
-    if command == "client_accepted" then
-        and awaiting_relay_response == sender_address then
+    if command == "client_accepted"
+        and awaiting_relay_response == sender_address
+        and trying_to_connect then
+      access_point_distance = distance
       current_access_point = sender_address
       event.cancel(drop_request_id)
     end
