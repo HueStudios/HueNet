@@ -37,8 +37,11 @@ end
 HueNetLib = {}
 
 -- Common relay utilities
-local current_access_point = nil
+local current_access_point    = nil
 local awaiting_relay_response = false
+local drop_request_id         = nil
+local trying_to_connect       = false
+local access_point_distance   = 0
 
 local register_on_relay = function (relay_addr)
   modem.send(relay_addr, 2040, "client_register")
