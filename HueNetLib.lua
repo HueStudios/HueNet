@@ -122,4 +122,51 @@ end
 
 event.listen("modem_message", network_callback)
 
+-- Library exports
+HueNetLib.Enable = function ()
+  trying_to_connect = true
+end
+
+HueNetLib.Disable = function ()
+  trying_to_connect = false
+  if current_access_point then
+    unregister_on_relay(current_access_point)
+  end
+end
+
+HueNetLib.IsEnabled = function ()
+  return trying_to_connect
+end
+
+HueNetLib.SignalLevel = function ()
+  if current_access_point then
+    if modem.isWireless() then
+      return 1
+    else
+      if access_point_distance then
+        return access_point_distance / 400
+      else
+        return 0
+      end
+    end
+  end
+end
+
+HueNetLib.Connect = function(port, remote_address, callback)
+  if port > 2040 and port <= 2045 then
+    this_listener = add_listener(port, remote_address, callback)
+    connection    = {}
+    connection.Send = function(message)
+      return send_to_addr(port, remote_address, message)
+    end
+    connection.Disconnect = function ()
+      remove_listener(this_listener)
+      connection.Send       = nil
+      connection.Disconnect = nil
+      connection            = nil
+    end
+    return connection
+  end
+end
+
 return HueNetLib
