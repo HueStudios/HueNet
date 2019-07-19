@@ -114,4 +114,6 @@ local network_callback = function (_, local_address, sender_address, port,
   end
 end
 
+event.listen("modem_message", network_callback)
+
 return HueNetLib
