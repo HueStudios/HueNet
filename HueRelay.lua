@@ -90,9 +90,11 @@ relay_func = function(update_parts, firmware_version)
         end
         if command == "client_register" then
           clients[from] = true
+          modem.send(from, port, nil, "client_accepted")
         end
         if command == "client_unregister" then
           clients[from] = nil
+          modem.send(from, port, nil "client_removed")
         end
       end
 
