@@ -102,10 +102,10 @@ relay_func = function(update_parts, firmware_version)
       if port > 2040 and port <= 2045 then
 
         -- Message sending
-        if command == "send_message" then
+        if command == "send_message" and clients[from] then
 
           -- Prevent spoofing
-          if clients[from] and origin ~= from then
+          if origin ~= from then
             origin = from
           end
 
@@ -128,10 +128,10 @@ relay_func = function(update_parts, firmware_version)
         end
 
         -- Message broadcasting
-        if command == "broadcast_message" then
+        if command == "broadcast_message" and clients[from] then
 
           -- Prevent spoofing
-          if clients[from] and origin ~= from then
+          if origin ~= from then
             origin = from
           end
 
