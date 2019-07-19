@@ -67,6 +67,7 @@ local add_listener = function (port, remote_address, callback)
   this_listener.callback       = callback
   this_listener.port           = port
   listeners[port][remote_address][this_listener.id] = this_listener
+  return this_listener
 end
 
 local remove_listener = function (listener)
