@@ -144,7 +144,7 @@ HueNetLib.SignalLevel = function ()
       return 1
     else
       if access_point_distance then
-        return access_point_distance / 400
+        return 1 - (access_point_distance / 400.0)
       else
         return 0
       end
