@@ -31,13 +31,13 @@ end
 args = {...}
 
 -- Load update information from disk and console
-local firmware_version = args[3]
+local firmware_version = 0 + args[2]
 update_parts = {}
-update_file = io.open(args[2], "r")
+update_file = io.open(args[1], "r")
 counter = 1
 while true do
-  update_parts[counter] = update_file:read(32)
-  if #update_parts[counter] ~= 32 then
+  update_parts[counter] = update_file:read(1024)
+  if #update_parts[counter] ~= 1024 then
     break
   end
   counter = counter + 1
