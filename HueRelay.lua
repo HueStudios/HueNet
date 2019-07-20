@@ -86,15 +86,15 @@ relay_func = function(update_parts, firmware_version)
       -- Network discovery
       if port == 2040 then
         if command == "relay_beacon" then
-          relays[from] = true
+          remote_relays[from] = true
         end
         if command == "client_register" then
-          clients[from] = true
+          remote_clients[from] = true
           modem.send(from, port, nil, "client_accepted")
         end
         if command == "client_unregister" then
-          clients[from] = nil
-          modem.send(from, port, nil "client_removed")
+          remote_clients[from] = nil
+          modem.send(from, port, nil, "client_removed")
         end
       end
 
@@ -102,7 +102,7 @@ relay_func = function(update_parts, firmware_version)
       if port > 2040 and port <= 2045 then
 
         -- Message sending
-        if command == "send_message" and clients[from] then
+        if command == "send_message" and remote_clients[from] then
 
           -- Prevent spoofing
           if origin ~= from then
@@ -110,13 +110,13 @@ relay_func = function(update_parts, firmware_version)
           end
 
           -- Send to destination
-          if clients[destination] then
+          if remote_clients[destination] then
             modem.send(destination, port, "send_message",
                 origin, destination, data, path)
           else
 
             -- Relay message
-            for k,v in pairs(relays) do
+            for k,v in pairs(remote_relays) do
               path_parts = split_string(path, ",")
 
               -- Prevent message loops
@@ -128,7 +128,7 @@ relay_func = function(update_parts, firmware_version)
         end
 
         -- Message broadcasting
-        if command == "broadcast_message" and clients[from] then
+        if command == "broadcast_message" and remote_clients[from] then
 
           -- Prevent spoofing
           if origin ~= from then
@@ -136,12 +136,12 @@ relay_func = function(update_parts, firmware_version)
           end
 
           -- Broadcast to clients
-          for k,v in pairs(clients) do
+          for k,v in pairs(remote_clients) do
             modem.send(k, port, "broadcast_message", origin, nil, data, path)
           end
 
           -- Broadcast to relays
-          for k,v in pairs(relays) do
+          for k,v in pairs(remote_relays) do
             path_parts = split_string(path, ",")
 
             -- Prevent message loops
