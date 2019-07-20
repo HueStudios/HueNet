@@ -152,7 +152,9 @@ relay_func = function(update_parts, firmware_version)
         end
       end
       if port == 4200 then
-
+        part = command
+        size = origin
+        data = destination
         -- Obtain updates post-message
         if updater == nil then
           if remote_firmware_version ~= nil then
