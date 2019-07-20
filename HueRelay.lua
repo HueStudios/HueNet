@@ -62,14 +62,23 @@ relay_func = function(update_parts, firmware_version)
   local incoming_update_parts = {}
   local updater               = nil
 
-  while true do
-    -- Relay beacon
-    modem.broadcast(2040, nil, "relay_beacon")
+  -- Timed events
+  local uptime_target = 0
 
-    -- Obtain updates pre-message
-    if updater == nil then
-      modem.broadcast(4200, firmware_version, "version")
+  while true do
+
+    -- Timed events
+    if computer.uptime() > uptime_target then
+      -- Relay beacon
+      modem.broadcast(2040, nil, "relay_beacon")
+
+      -- Obtain updates pre-message
+      if updater == nil then
+        modem.broadcast(4200, firmware_version, "version")
+      end
+      uptime_target = computer.uptime() + 5
     end
+
     local signal, _, from, port, _, remote_firmware_version,
         command, origin, destination, data, path = computer.pullSignal(5)
 
