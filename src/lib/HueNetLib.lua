@@ -175,6 +175,7 @@ HueNetLib.GetSignalLevel = function ()
       end
     end
   end
+  return 0
 end
 
 HueNetLib.Connect = function(port, remote_address, callback)
