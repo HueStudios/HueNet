@@ -19,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -- Library imports
 local component = require("component")
 local event     = require("event")
-local serial    = require("serialization")
 local modem     = componen.modem
 
 -- Utilities
@@ -164,7 +163,7 @@ HueNetLib.GetSentBytes = function()
   return sent_bytes
 end
 
-HueNetLib.SignalLevel = function ()
+HueNetLib.GetSignalLevel = function ()
   if current_access_point then
     if modem.isWireless() then
       return 1
