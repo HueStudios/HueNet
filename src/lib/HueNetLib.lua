@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -- Library imports
 local component = require("component")
 local event     = require("event")
-local modem     = componen.modem
+local modem     = component.modem
 
 -- Utilities
 local random_dictionary = "ABCDEF1234567890"
