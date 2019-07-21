@@ -168,7 +168,7 @@ HueNetLib.GetSignalLevel = function ()
     if modem.isWireless() then
       return 1
     else
-      if access_point_distance then
+      if access_point_distance ~= nil then
         return 1 - (access_point_distance / 400.0)
       else
         return 0
