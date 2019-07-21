@@ -19,25 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -- Library imports
 local HueNetLib = require("HueNetLib")
 
-local help = function()
+help = function()
   print("HueNet  Copyright (C) 2019 HueStudios")
   print("This program comes with ABSOLUTELY NO WARRANTY.")
   print("Available commands: ")
-  print("HueNetRC license_warranty   - Display license warranty details.")
-  print("HueNetRC license_conditions - Display license conditions.")
-  print("HueNetRC license            - Display the full GNU GPL3 license.")
-  print("HueNetRC enable             - Stablish a connection to the HueNet.")
-  print("HueNetRC disable            - Discard your connection to the HueNet.")
-  print("HueNetRC status             - Display the status of your HueNet connection.")
-end
-
-args = {...}
-
-if #args > 1 then
-  print("Unexpected number of arguments.")
-  os.exit()
-end
-
-if #args == 0 then
-
+  print("rc HueNet start              - Stablish a connection to the HueNet.")
+  print("rc HueNet stop               - Discard your connection to the HueNet.")
+  print("rc HueNet restart            - Stop and then start.")
+  print("rc HueNet enable             - Start on boot.")
+  print("rc HueNet disable            - Disable start on boot.")
+  print("rc HueNet status             - Display the status of your HueNet connection.")
+  print("rc HueNet help               - Display this message.")
 end
