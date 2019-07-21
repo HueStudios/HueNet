@@ -117,7 +117,7 @@ local network_callback = function (_, local_address, sender_address, port,
         if listeners[port][origin] then
           received_bytes = received_bytes + #data
           for k,v in pairs(listeners[port][origin]) do
-            pcall(v.callback, port, command, data, path))
+            pcall(v.callback, port, command, data, path)
           end
         end
       end
