@@ -43,6 +43,10 @@ local drop_request_id         = nil
 local trying_to_connect       = false
 local access_point_distance   = 0
 
+-- Usage statistics
+local sent_bytes = 0
+local received_bytes = 0
+
 local register_on_relay = function (relay_addr)
   modem.send(relay_addr, 2040, "client_register")
 end
@@ -77,6 +81,7 @@ end
 -- Networking
 local send_to_addr = function (port, remote_address, message)
   if current_access_point then
+    sent_bytes = sent_bytes + #message
     modem.send(current_access_point, port, "send_message", nil, remote_address,
       message)
   end
@@ -111,6 +116,7 @@ local network_callback = function (_, local_address, sender_address, port,
     if command == "send_message" or command == "broadcast_message" then
       if sender_address == current_access_point then
         if listeners[port][origin] then
+          received_bytes = received_bytes + #data
           for k,v in pairs(listeners[port][origin]) do
             pcall(v.callback, port, command, data, path))
           end
@@ -136,6 +142,26 @@ end
 
 HueNetLib.IsEnabled = function ()
   return trying_to_connect
+end
+
+HueNetLib.IsConnected = function ()
+  return current_access_point ~= nil
+end
+
+HueNetLib.GetCurrentAccessPoint = function ()
+  if HueNetLib.IsConnected() then
+    return current_access_point
+  else
+    return ""
+  end
+end
+
+HueNetLib.GetReceivedBytes = function()
+  return received_bytes
+end
+
+HueNetLib.GetSentBytes = function()
+  return sent_bytes
 end
 
 HueNetLib.SignalLevel = function ()
