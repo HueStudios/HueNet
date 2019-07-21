@@ -19,6 +19,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -- Library imports
 local HueNetLib = require("HueNetLib")
 
+start = function ()
+  if not HueNetLib.IsEnabled() then
+    HueNetLib.Enable()
+  else
+    print("HueNet has already been started!")
+  end
+end
+
+stop = function ()
+  if HueNetLib.IsEnabled() then
+    HueNetLib.Disable()
+  else
+    print("HueNet is already stopped!")
+  end
+end
+
+status = function ()
+  if HueNetLib.IsEnabled() then
+    print("Status: active.")
+    print("Network connected: " .. HueNetLib.IsConnected())
+    print("Access point: " .. HueNetLib.GetCurrentAccessPoint())
+    print("Signal level: " .. HueNetLib.GetSignalLevel() * 100 .. "%")
+    print("Bytes RX: " .. HueNetLib.GetReceivedBytes())
+    print("Bytes TX: " .. HueNetLib.GetSentBytes())
+  else
+    print("Status: stopped.")
+  end
+end
+
 help = function()
   print("HueNet  Copyright (C) 2019 HueStudios")
   print("This program comes with ABSOLUTELY NO WARRANTY.")
