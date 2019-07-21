@@ -22,6 +22,7 @@ local HueNetLib = require("HueNetLib")
 start = function ()
   if not HueNetLib.IsEnabled() then
     HueNetLib.Enable()
+    print("Started!")
   else
     print("HueNet has already been started!")
   end
@@ -30,6 +31,7 @@ end
 stop = function ()
   if HueNetLib.IsEnabled() then
     HueNetLib.Disable()
+    print("Stopped!")
   else
     print("HueNet is already stopped!")
   end
@@ -38,7 +40,11 @@ end
 status = function ()
   if HueNetLib.IsEnabled() then
     print("Status: active.")
-    print("Network connected: " .. HueNetLib.IsConnected())
+    if HueNetLib.IsConnected() then
+      print("Network connected: yes")
+    else
+      print("Network connected: no")
+    end
     print("Access point: " .. HueNetLib.GetCurrentAccessPoint())
     print("Signal level: " .. HueNetLib.GetSignalLevel() * 100 .. "%")
     print("Bytes RX: " .. HueNetLib.GetReceivedBytes())
