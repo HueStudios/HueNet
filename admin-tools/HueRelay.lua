@@ -72,6 +72,11 @@ relay_func = function(update_parts, firmware_version)
       -- Relay beacon
       modem.broadcast(2040, nil, "relay_beacon")
 
+      -- Re-acknowledge clients
+      for k,v in pairs(remote_clients) do
+        modem.send(k, 2040, "client_register")
+      end
+
       -- Obtain updates pre-message
       if updater == nil then
         modem.broadcast(4200, firmware_version, "version")
