@@ -47,12 +47,12 @@ local sent_bytes = 0
 local received_bytes = 0
 
 local register_on_relay = function (relay_addr)
-  modem.send(relay_addr, 2040, "client_register")
+  modem.send(relay_addr, 2040, nil, "client_register")
   print("Trying to register on", relay_addr)
 end
 
 local unregister_on_relay = function (relay_addr)
-  modem.send(relay_addr, 2040, "client_unregister")
+  modem.send(relay_addr, 2040, nil, "client_unregister")
 end
 
 -- HueNet event listeners
