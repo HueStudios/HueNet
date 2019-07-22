@@ -131,12 +131,18 @@ event.listen("modem_message", network_callback)
 -- Library exports
 HueNetLib.Enable = function ()
   trying_to_connect = true
+  for i = 2040, 2045 do
+    modem.open(i)
+  end
 end
 
 HueNetLib.Disable = function ()
   trying_to_connect = false
   if current_access_point then
     unregister_on_relay(current_access_point)
+  end
+  for i = 2040, 2045 do
+    modem.close(i)
   end
 end
 
