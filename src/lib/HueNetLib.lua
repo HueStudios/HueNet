@@ -82,8 +82,7 @@ end
 local send_to_addr = function (port, remote_address, message)
   if current_access_point then
     sent_bytes = sent_bytes + #message
-    modem.send(current_access_point, port, "send_message", nil, remote_address,
-      message)
+    modem.send(current_access_point, port, nil, "send_message", nil, remote_address, message)
   end
 end
 
