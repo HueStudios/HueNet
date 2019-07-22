@@ -94,8 +94,9 @@ end
 
 local network_callback = function (_, local_address, sender_address, port,
     distance, _, command, origin, destination, data, path)
+  print(command)
   if current_access_point == nil then
-    if command == "relay_beacon" and not awaiting_relay_response
+    if command == "relay_beacon" and (not awaiting_relay_response)
         and trying_to_connect then
       register_on_relay(sender_address)
       awaiting_relay_response = sender_address
