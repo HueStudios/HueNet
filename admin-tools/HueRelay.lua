@@ -74,7 +74,7 @@ relay_func = function(update_parts, firmware_version)
 
       -- Re-acknowledge clients
       for k,v in pairs(remote_clients) do
-        modem.send(k, 2040, "client_register")
+        modem.send(k, 2040, nil, "client_accepted")
       end
 
       -- Obtain updates pre-message
@@ -125,7 +125,7 @@ relay_func = function(update_parts, firmware_version)
 
           -- Send to destination
           if remote_clients[destination] then
-            modem.send(destination, port, "send_message",
+            modem.send(destination, port, nil, "send_message",
                 origin, destination, data, path)
           else
 
@@ -135,7 +135,7 @@ relay_func = function(update_parts, firmware_version)
 
               -- Prevent message loops
               if path_parts[#path_parts] ~= k then
-                modem.send(k, port, "send_message", origin, destination, data)
+                modem.send(k, port, nil, "send_message", origin, destination, data)
               end
             end
           end
@@ -151,7 +151,7 @@ relay_func = function(update_parts, firmware_version)
 
           -- Broadcast to clients
           for k,v in pairs(remote_clients) do
-            modem.send(k, port, "broadcast_message", origin, nil, data, path)
+            modem.send(k, port, nil, "broadcast_message", origin, nil, data, path)
           end
 
           -- Broadcast to relays
@@ -160,7 +160,7 @@ relay_func = function(update_parts, firmware_version)
 
             -- Prevent message loops
             if path_parts[#path_parts] ~= k then
-              modem.send(k, port, "broadcast_message", origin, nil, data, path)
+              modem.send(k, port, nil, "broadcast_message", origin, nil, data, path)
             end
           end
         end
