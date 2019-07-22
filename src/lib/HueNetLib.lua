@@ -63,8 +63,8 @@ local add_listener = function (port, remote_address, callback)
   if listeners[port] == nil then
     listeners[port] = {}
   end
-  if listeners[remote_address] == nil then
-    listeners[remote_address] = {}
+  if listeners[port][remote_address] == nil then
+    listeners[port][remote_address] = {}
   end
   this_listener.id             = random_string(8, random_dictionary)
   this_listener.remote_address = remote_address
