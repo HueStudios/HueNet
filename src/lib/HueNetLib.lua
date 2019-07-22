@@ -48,6 +48,7 @@ local received_bytes = 0
 
 local register_on_relay = function (relay_addr)
   modem.send(relay_addr, 2040, "client_register")
+  print("Trying to register on", relay_addr)
 end
 
 local unregister_on_relay = function (relay_addr)
@@ -96,7 +97,6 @@ local network_callback = function (_, local_address, sender_address, port,
     distance, _, command, origin, destination, data, path)
   --print(command)
   if current_access_point == nil then
-    print(command, awaiting_relay_response, trying_to_connect)
     if command == "relay_beacon" and (not awaiting_relay_response)
         and trying_to_connect then
       register_on_relay(sender_address)
