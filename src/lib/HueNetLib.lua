@@ -94,8 +94,9 @@ end
 
 local network_callback = function (_, local_address, sender_address, port,
     distance, _, command, origin, destination, data, path)
-  print(command)
+  --print(command)
   if current_access_point == nil then
+    print(command, awaiting_relay_response, trying_to_connect)
     if command == "relay_beacon" and (not awaiting_relay_response)
         and trying_to_connect then
       register_on_relay(sender_address)
@@ -110,6 +111,7 @@ local network_callback = function (_, local_address, sender_address, port,
       current_access_point = sender_address
       event.cancel(drop_request_id)
     end
+  else
     if command == "client_removed" then
       drop_access_point_request()
     end
